@@ -10,18 +10,36 @@
 
   <!-- Header -->
   <header class="header">
-    <div class="header-logo">La Universidad en el Campo</div>
-    <div class="header-sub">Percepciones frente al proceso formativo</div>
+    <div class="header-inner">
+      <h1 class="header-logo">La Universidad <em>en el Campo</em></h1>
+      <p class="header-sub">Encuesta de percepciones frente al proceso formativo</p>
+      <div class="header-stats">
+        <div class="hstat">
+          <span class="hstat-num">28</span>
+          <span class="hstat-lbl">preguntas</span>
+        </div>
+        <div class="hstat-div"></div>
+        <div class="hstat">
+          <span class="hstat-num">~5</span>
+          <span class="hstat-lbl">minutos</span>
+        </div>
+      </div>
+    </div>
+    <svg class="header-wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 72" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,36 C180,72 360,0 540,36 C720,72 900,0 1080,36 C1260,72 1380,18 1440,36 L1440,72 L0,72 Z"/>
+    </svg>
   </header>
 
   <!-- Barra de progreso -->
   <div class="progreso-wrap" id="barraProgreso">
-    <div class="progreso-info">
-      <span class="progreso-seccion" id="progresoSeccion">Información general</span>
-      <span class="progreso-contador" id="progresoContador">Sección 1 de 6</span>
-    </div>
-    <div class="progreso-barra">
-      <div class="progreso-fill" id="progresoFill" style="width: 16.6%"></div>
+    <div class="progreso-inner">
+      <div class="progreso-info">
+        <span class="progreso-seccion" id="progresoSeccion">Información general</span>
+        <span class="progreso-contador" id="progresoContador">Sección 1 de 6</span>
+      </div>
+      <div class="progreso-barra">
+        <div class="progreso-fill" id="progresoFill" style="width: 16.6%"></div>
+      </div>
     </div>
   </div>
 
@@ -466,9 +484,10 @@
       <!-- Pantalla de éxito -->
       <div class="exito" id="exito">
         <div class="exito-icono">🌱</div>
-        <h2 class="exito-titulo">¡Gracias por tu participación!</h2>
-        <p class="exito-texto">Tu respuesta fue enviada correctamente. Tu voz es importante para fortalecer La Universidad en el Campo.</p>
-        <button class="btn btn-primario" style="max-width:280px; margin:0 auto; display:block" onclick="reiniciarFormulario()">Registrar otra respuesta</button>
+        <h2 class="exito-titulo">¡Gracias<span id="exito-nombre" class="exito-nombre"></span>!</h2>
+        <div class="exito-badge">✓ Formulario enviado correctamente</div>
+        <p class="exito-texto">Tu respuesta fue registrada exitosamente. Tu voz es clave para fortalecer <strong>La Universidad en el Campo</strong> y mejorar el proceso formativo.</p>
+        <button class="btn btn-primario" style="max-width:290px; margin:0 auto; display:block" onclick="reiniciarFormulario()">Registrar otra respuesta</button>
       </div>
 
     </div>

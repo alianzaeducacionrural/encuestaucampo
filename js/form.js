@@ -151,9 +151,15 @@ function anterior() {
 }
 
 function irA(num) {
+  const esRetroceso = num < seccionActual;
   document.getElementById(`sec${seccionActual}`).classList.remove('activa');
   seccionActual = num;
-  document.getElementById(`sec${seccionActual}`).classList.add('activa');
+  const secEl = document.getElementById(`sec${seccionActual}`);
+  secEl.classList.add('activa');
+  if (esRetroceso) {
+    secEl.classList.add('reverse');
+    setTimeout(() => secEl.classList.remove('reverse'), 400);
+  }
   actualizarProgreso();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -276,6 +282,11 @@ async function enviarFormulario() {
     localStorage.removeItem('formulario_borrador');
     enviando.classList.remove('visible');
     exito.classList.add('visible');
+
+    // Personalizar mensaje de éxito con el primer nombre
+    const primerNombre = datos.nombre.trim().split(' ')[0] || '';
+    const nombreEl = document.getElementById('exito-nombre');
+    if (nombreEl && primerNombre) nombreEl.textContent = ', ' + primerNombre;
 
   } catch (err) {
     enviando.classList.remove('visible');

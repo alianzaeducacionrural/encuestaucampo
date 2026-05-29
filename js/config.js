@@ -2,5 +2,5 @@
 // CONFIGURACIÓN — reemplaza con tu URL de GAS
 // ================================================
 const CONFIG = {
-  GAS_URL: 'https://script.google.com/macros/s/AKfycbxtGZU5d8Aa_8mT7uoqmCFQvFUW23rZgQafOx1Vr59vL1EC8GAjrbZyYUByfwNQ9ZT8ig/exec',
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbw5khcK5otMuXJSXi8e76O7VEjkmJ4DFdBdJ_ApcRItlwTlelbTeo0t7MDFk65oqEs2/exec',
 };
