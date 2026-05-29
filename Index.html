@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Percepciones Estudiantiles – La Universidad en el Campo</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-logo">La Universidad en el Campo</div>
+    <div class="header-sub">Percepciones frente al proceso formativo</div>
+  </header>
+
+  <!-- Barra de progreso -->
+  <div class="progreso-wrap" id="barraProgreso">
+    <div class="progreso-info">
+      <span class="progreso-seccion" id="progresoSeccion">Información general</span>
+      <span class="progreso-contador" id="progresoContador">Sección 1 de 6</span>
+    </div>
+    <div class="progreso-barra">
+      <div class="progreso-fill" id="progresoFill" style="width: 16.6%"></div>
+    </div>
+  </div>
+
+  <!-- Pantalla de carga inicial -->
+  <div class="contenedor">
+    <div class="cargando-catalogos visible" id="cargandoCatalogos">
+      <div class="spinner"></div>
+      <div class="cargando-texto">Cargando información del formulario…</div>
+    </div>
+  </div>
+
+  <!-- Formulario -->
+  <form id="formulario" novalidate style="display:none">
+    <div class="contenedor">
+
+      <!-- ==============================
+           SECCIÓN 1 — INFORMACIÓN GENERAL
+           ============================== -->
+      <section class="seccion activa" id="sec1" data-titulo="Información general" data-num="1">
+        <h2 class="seccion-titulo">Información general</h2>
+        <p class="seccion-desc">Cuéntanos quién eres y en qué programa estás.</p>
+
+        <!-- Nombre -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="nombre">
+            <span class="num">1</span> Nombre completo <span class="requerido">*</span>
+          </label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre completo" autocomplete="name" />
+          <div class="msg-error" id="err-nombre">Por favor ingresa tu nombre.</div>
+        </div>
+
+        <!-- Municipio -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="municipio">
+            <span class="num">2</span> Municipio <span class="requerido">*</span>
+          </label>
+          <select id="municipio" name="municipio">
+            <option value="">— Selecciona un municipio —</option>
+          </select>
+          <div class="msg-error" id="err-municipio">Selecciona tu municipio.</div>
+        </div>
+
+        <!-- Institución Educativa -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="institucion">
+            <span class="num">3</span> Institución Educativa <span class="requerido">*</span>
+          </label>
+          <select id="institucion" name="institucion" disabled>
+            <option value="">— Primero selecciona el municipio —</option>
+          </select>
+          <div class="msg-error" id="err-institucion">Selecciona tu institución.</div>
+        </div>
+
+        <!-- Sede -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="sede">
+            <span class="num">4</span> Sede <span class="requerido">*</span>
+          </label>
+          <select id="sede" name="sede" disabled>
+            <option value="">— Primero selecciona la institución —</option>
+          </select>
+          <div class="msg-error" id="err-sede">Selecciona tu sede.</div>
+        </div>
+
+        <!-- Universidad -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="universidad">
+            <span class="num">5</span> Universidad <span class="requerido">*</span>
+          </label>
+          <select id="universidad" name="universidad">
+            <option value="">— Selecciona una universidad —</option>
+          </select>
+          <div class="msg-error" id="err-universidad">Selecciona tu universidad.</div>
+        </div>
+
+        <!-- Programa -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="programa">
+            <span class="num">6</span> Programa de formación <span class="requerido">*</span>
+          </label>
+          <select id="programa" name="programa" disabled>
+            <option value="">— Primero selecciona la universidad —</option>
+          </select>
+          <div class="msg-error" id="err-programa">Selecciona tu programa.</div>
+        </div>
+
+        <!-- Semestre -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="semestre">
+            <span class="num">7</span> Semestre o nivel de formación <span class="requerido">*</span>
+          </label>
+          <select id="semestre" name="semestre">
+            <option value="">— Selecciona —</option>
+            <option>Primero</option>
+            <option>Segundo</option>
+            <option>Tercero</option>
+            <option>Cuarto</option>
+            <option>Quinto</option>
+            <option>Sexto</option>
+          </select>
+          <div class="msg-error" id="err-semestre">Selecciona tu semestre.</div>
+        </div>
+
+        <!-- Fecha -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="fecha_diligenciamiento">
+            <span class="num">8</span> Fecha de diligenciamiento <span class="requerido">*</span>
+          </label>
+          <input type="date" id="fecha_diligenciamiento" name="fecha_diligenciamiento" />
+          <div class="msg-error" id="err-fecha_diligenciamiento">Selecciona la fecha.</div>
+        </div>
+
+        <div class="nav-botones">
+          <button type="button" class="btn btn-primario" onclick="siguiente()">Siguiente →</button>
+        </div>
+      </section>
+
+      <!-- ==============================
+           SECCIÓN 2 — MOTIVACIÓN Y PERMANENCIA
+           ============================== -->
+      <section class="seccion" id="sec2" data-titulo="Motivación y permanencia" data-num="2">
+        <h2 class="seccion-titulo">Motivación y permanencia</h2>
+        <p class="seccion-desc">Cuéntanos cómo te sientes frente a tu proceso de formación.</p>
+
+        <!-- P6 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">9</span> ¿Cómo te sientes actualmente frente a tu proceso de formación? <span class="requerido">*</span>
+          </label>
+          <div class="opciones" id="p6_motivacion">
+            <label class="opcion"><input type="radio" name="p6_motivacion" value="Muy motivado"><span class="opcion-circulo"></span><span class="opcion-texto">Muy motivado/a</span></label>
+            <label class="opcion"><input type="radio" name="p6_motivacion" value="Motivado"><span class="opcion-circulo"></span><span class="opcion-texto">Motivado/a</span></label>
+            <label class="opcion"><input type="radio" name="p6_motivacion" value="Poco motivado"><span class="opcion-circulo"></span><span class="opcion-texto">Poco motivado/a</span></label>
+            <label class="opcion"><input type="radio" name="p6_motivacion" value="Desmotivado"><span class="opcion-circulo"></span><span class="opcion-texto">Desmotivado/a</span></label>
+          </div>
+          <div class="msg-error" id="err-p6_motivacion">Selecciona una opción.</div>
+        </div>
+
+        <!-- P7 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">10</span> ¿Consideras importante continuar en el programa? <span class="requerido">*</span>
+          </label>
+          <div class="opciones" id="p7_continuar">
+            <label class="opcion"><input type="radio" name="p7_continuar" value="Sí"><span class="opcion-circulo"></span><span class="opcion-texto">Sí</span></label>
+            <label class="opcion"><input type="radio" name="p7_continuar" value="No"><span class="opcion-circulo"></span><span class="opcion-texto">No</span></label>
+            <label class="opcion"><input type="radio" name="p7_continuar" value="Tal vez"><span class="opcion-circulo"></span><span class="opcion-texto">Tal vez</span></label>
+          </div>
+          <div class="msg-error" id="err-p7_continuar">Selecciona una opción.</div>
+        </div>
+
+        <!-- P8 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">11</span> ¿Has pensado en retirarte del programa? <span class="requerido">*</span>
+          </label>
+          <div class="opciones horizontal" id="p8_retiro">
+            <label class="opcion"><input type="radio" name="p8_retiro" value="Sí"><span class="opcion-circulo"></span><span class="opcion-texto">Sí</span></label>
+            <label class="opcion"><input type="radio" name="p8_retiro" value="No"><span class="opcion-circulo"></span><span class="opcion-texto">No</span></label>
+          </div>
+          <div class="msg-error" id="err-p8_retiro">Selecciona una opción.</div>
+        </div>
+
+        <!-- P9 — condicional si P8 = Sí -->
+        <div class="pregunta pregunta-condicional" id="bloque-p9">
+          <label class="pregunta-label">
+            <span class="num">12</span> ¿Cuáles han sido las principales razones?
+          </label>
+          <div class="opciones" id="p9_razones_retiro">
+            <label class="opcion"><input type="checkbox" name="p9_razones_retiro" value="Dificultades económicas"><span class="opcion-cuadro"></span><span class="opcion-texto">Dificultades económicas</span></label>
+            <label class="opcion"><input type="checkbox" name="p9_razones_retiro" value="Falta de tiempo"><span class="opcion-cuadro"></span><span class="opcion-texto">Falta de tiempo</span></label>
+            <label class="opcion"><input type="checkbox" name="p9_razones_retiro" value="Distancia o transporte"><span class="opcion-cuadro"></span><span class="opcion-texto">Distancia o transporte</span></label>
+            <label class="opcion"><input type="checkbox" name="p9_razones_retiro" value="Problemas familiares"><span class="opcion-cuadro"></span><span class="opcion-texto">Problemas familiares</span></label>
+            <label class="opcion"><input type="checkbox" name="p9_razones_retiro" value="Dificultades académicas"><span class="opcion-cuadro"></span><span class="opcion-texto">Dificultades académicas</span></label>
+            <label class="opcion"><input type="checkbox" name="p9_razones_retiro" value="Falta de motivación"><span class="opcion-cuadro"></span><span class="opcion-texto">Falta de motivación</span></label>
+            <label class="opcion"><input type="checkbox" name="p9_razones_retiro" value="Trabajo"><span class="opcion-cuadro"></span><span class="opcion-texto">Trabajo</span></label>
+            <label class="opcion"><input type="checkbox" name="p9_razones_retiro" value="Otro"><span class="opcion-cuadro"></span><span class="opcion-texto">Otro</span></label>
+          </div>
+        </div>
+
+        <!-- P10 -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="p10_motivaciones">
+            <span class="num">13</span> ¿Qué aspectos te motivan a continuar estudiando?
+          </label>
+          <textarea id="p10_motivaciones" name="p10_motivaciones" placeholder="Escribe aquí tu respuesta…"></textarea>
+        </div>
+
+        <div class="nav-botones">
+          <button type="button" class="btn btn-secundario" onclick="anterior()">← Anterior</button>
+          <button type="button" class="btn btn-primario" onclick="siguiente()">Siguiente →</button>
+        </div>
+      </section>
+
+      <!-- ==============================
+           SECCIÓN 3 — RENDIMIENTO ACADÉMICO
+           ============================== -->
+      <section class="seccion" id="sec3" data-titulo="Rendimiento académico" data-num="3">
+        <h2 class="seccion-titulo">Rendimiento académico y dificultades</h2>
+        <p class="seccion-desc">Cuéntanos cómo va tu proceso académico.</p>
+
+        <!-- P11 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">14</span> ¿Cómo consideras tu desempeño académico? <span class="requerido">*</span>
+          </label>
+          <div class="opciones" id="p11_desempeno">
+            <label class="opcion"><input type="radio" name="p11_desempeno" value="Excelente"><span class="opcion-circulo"></span><span class="opcion-texto">Excelente</span></label>
+            <label class="opcion"><input type="radio" name="p11_desempeno" value="Bueno"><span class="opcion-circulo"></span><span class="opcion-texto">Bueno</span></label>
+            <label class="opcion"><input type="radio" name="p11_desempeno" value="Regular"><span class="opcion-circulo"></span><span class="opcion-texto">Regular</span></label>
+            <label class="opcion"><input type="radio" name="p11_desempeno" value="Bajo"><span class="opcion-circulo"></span><span class="opcion-texto">Bajo</span></label>
+          </div>
+          <div class="msg-error" id="err-p11_desempeno">Selecciona una opción.</div>
+        </div>
+
+        <!-- P12 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">15</span> ¿Has presentado dificultades en alguna asignatura o módulo? <span class="requerido">*</span>
+          </label>
+          <div class="opciones horizontal" id="p12_dificultades">
+            <label class="opcion"><input type="radio" name="p12_dificultades" value="Sí"><span class="opcion-circulo"></span><span class="opcion-texto">Sí</span></label>
+            <label class="opcion"><input type="radio" name="p12_dificultades" value="No"><span class="opcion-circulo"></span><span class="opcion-texto">No</span></label>
+          </div>
+          <div class="msg-error" id="err-p12_dificultades">Selecciona una opción.</div>
+        </div>
+
+        <!-- P13 — condicional si P12 = Sí -->
+        <div class="pregunta pregunta-condicional" id="bloque-p13">
+          <label class="pregunta-label">
+            <span class="num">16</span> ¿Cuáles son las principales dificultades académicas?
+          </label>
+          <div class="opciones" id="p13_dificultades_detalle">
+            <label class="opcion"><input type="checkbox" name="p13_dificultades_detalle" value="Comprensión de temas"><span class="opcion-cuadro"></span><span class="opcion-texto">Comprensión de temas</span></label>
+            <label class="opcion"><input type="checkbox" name="p13_dificultades_detalle" value="Lectura y escritura"><span class="opcion-cuadro"></span><span class="opcion-texto">Lectura y escritura</span></label>
+            <label class="opcion"><input type="checkbox" name="p13_dificultades_detalle" value="Uso de tecnología"><span class="opcion-cuadro"></span><span class="opcion-texto">Uso de tecnología</span></label>
+            <label class="opcion"><input type="checkbox" name="p13_dificultades_detalle" value="Desarrollo de actividades"><span class="opcion-cuadro"></span><span class="opcion-texto">Desarrollo de actividades</span></label>
+            <label class="opcion"><input type="checkbox" name="p13_dificultades_detalle" value="Tiempo para estudiar"><span class="opcion-cuadro"></span><span class="opcion-texto">Tiempo para estudiar</span></label>
+            <label class="opcion"><input type="checkbox" name="p13_dificultades_detalle" value="Trabajo en equipo"><span class="opcion-cuadro"></span><span class="opcion-texto">Trabajo en equipo</span></label>
+            <label class="opcion"><input type="checkbox" name="p13_dificultades_detalle" value="Investigación"><span class="opcion-cuadro"></span><span class="opcion-texto">Investigación</span></label>
+            <label class="opcion"><input type="checkbox" name="p13_dificultades_detalle" value="Ninguna"><span class="opcion-cuadro"></span><span class="opcion-texto">Ninguna</span></label>
+            <label class="opcion"><input type="checkbox" name="p13_dificultades_detalle" value="Otra"><span class="opcion-cuadro"></span><span class="opcion-texto">Otra</span></label>
+          </div>
+        </div>
+
+        <!-- P13b -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">17</span> ¿Has recibido apoyo oportuno para mejorar las dificultades académicas? <span class="requerido">*</span>
+          </label>
+          <div class="opciones horizontal" id="p13b_apoyo_oportuno">
+            <label class="opcion"><input type="radio" name="p13b_apoyo_oportuno" value="Sí"><span class="opcion-circulo"></span><span class="opcion-texto">Sí</span></label>
+            <label class="opcion"><input type="radio" name="p13b_apoyo_oportuno" value="No"><span class="opcion-circulo"></span><span class="opcion-texto">No</span></label>
+          </div>
+          <div class="msg-error" id="err-p13b_apoyo_oportuno">Selecciona una opción.</div>
+        </div>
+
+        <!-- P14 -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="p14_estrategias">
+            <span class="num">18</span> ¿Qué estrategias podrían ayudarte a mejorar tu proceso académico?
+          </label>
+          <textarea id="p14_estrategias" name="p14_estrategias" placeholder="Escribe aquí tu respuesta…"></textarea>
+        </div>
+
+        <div class="nav-botones">
+          <button type="button" class="btn btn-secundario" onclick="anterior()">← Anterior</button>
+          <button type="button" class="btn btn-primario" onclick="siguiente()">Siguiente →</button>
+        </div>
+      </section>
+
+      <!-- ==============================
+           SECCIÓN 4 — ACOMPAÑAMIENTO
+           ============================== -->
+      <section class="seccion" id="sec4" data-titulo="Necesidades de acompañamiento" data-num="4">
+        <h2 class="seccion-titulo">Necesidades de acompañamiento</h2>
+        <p class="seccion-desc">Cuéntanos qué tipo de apoyo necesitas.</p>
+
+        <!-- P15 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">19</span> ¿Consideras que requieres mayor acompañamiento en tu proceso formativo? <span class="requerido">*</span>
+          </label>
+          <div class="opciones" id="p15_acompanamiento">
+            <label class="opcion"><input type="radio" name="p15_acompanamiento" value="Sí"><span class="opcion-circulo"></span><span class="opcion-texto">Sí</span></label>
+            <label class="opcion"><input type="radio" name="p15_acompanamiento" value="No"><span class="opcion-circulo"></span><span class="opcion-texto">No</span></label>
+            <label class="opcion"><input type="radio" name="p15_acompanamiento" value="Algunas veces"><span class="opcion-circulo"></span><span class="opcion-texto">Algunas veces</span></label>
+          </div>
+          <div class="msg-error" id="err-p15_acompanamiento">Selecciona una opción.</div>
+        </div>
+
+        <!-- P16 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">20</span> ¿En qué aspectos necesitas mayor apoyo?
+          </label>
+          <div class="opciones" id="p16_aspectos_apoyo">
+            <label class="opcion"><input type="checkbox" name="p16_aspectos_apoyo" value="Académico"><span class="opcion-cuadro"></span><span class="opcion-texto">Académico</span></label>
+            <label class="opcion"><input type="checkbox" name="p16_aspectos_apoyo" value="Personal"><span class="opcion-cuadro"></span><span class="opcion-texto">Personal</span></label>
+            <label class="opcion"><input type="checkbox" name="p16_aspectos_apoyo" value="Motivacional"><span class="opcion-cuadro"></span><span class="opcion-texto">Motivacional</span></label>
+            <label class="opcion"><input type="checkbox" name="p16_aspectos_apoyo" value="Tecnológico"><span class="opcion-cuadro"></span><span class="opcion-texto">Tecnológico</span></label>
+            <label class="opcion"><input type="checkbox" name="p16_aspectos_apoyo" value="Orientación para proyectos"><span class="opcion-cuadro"></span><span class="opcion-texto">Orientación para proyectos</span></label>
+            <label class="opcion"><input type="checkbox" name="p16_aspectos_apoyo" value="Manejo del tiempo"><span class="opcion-cuadro"></span><span class="opcion-texto">Manejo del tiempo</span></label>
+            <label class="opcion"><input type="checkbox" name="p16_aspectos_apoyo" value="Comunicación con docentes"><span class="opcion-cuadro"></span><span class="opcion-texto">Comunicación con docentes</span></label>
+            <label class="opcion"><input type="checkbox" name="p16_aspectos_apoyo" value="Otro"><span class="opcion-cuadro"></span><span class="opcion-texto">Otro</span></label>
+          </div>
+        </div>
+
+        <!-- P17 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">21</span> ¿De quién necesitas mayor acompañamiento?
+          </label>
+          <div class="opciones" id="p17_quien_acompana">
+            <label class="opcion"><input type="checkbox" name="p17_quien_acompana" value="Docente universitario"><span class="opcion-cuadro"></span><span class="opcion-texto">Docente universitario</span></label>
+            <label class="opcion"><input type="checkbox" name="p17_quien_acompana" value="Padrino"><span class="opcion-cuadro"></span><span class="opcion-texto">Padrino</span></label>
+            <label class="opcion"><input type="checkbox" name="p17_quien_acompana" value="Compañeros de grupo"><span class="opcion-cuadro"></span><span class="opcion-texto">Compañeros de grupo</span></label>
+            <label class="opcion"><input type="checkbox" name="p17_quien_acompana" value="Institución Educativa"><span class="opcion-cuadro"></span><span class="opcion-texto">Institución Educativa</span></label>
+            <label class="opcion"><input type="checkbox" name="p17_quien_acompana" value="Familia"><span class="opcion-cuadro"></span><span class="opcion-texto">Familia</span></label>
+          </div>
+        </div>
+
+        <div class="nav-botones">
+          <button type="button" class="btn btn-secundario" onclick="anterior()">← Anterior</button>
+          <button type="button" class="btn btn-primario" onclick="siguiente()">Siguiente →</button>
+        </div>
+      </section>
+
+      <!-- ==============================
+           SECCIÓN 5 — PERCEPCIÓN
+           ============================== -->
+      <section class="seccion" id="sec5" data-titulo="Percepción del proceso formativo" data-num="5">
+        <h2 class="seccion-titulo">Percepción sobre el proceso formativo</h2>
+        <p class="seccion-desc">Tu opinión es clave para mejorar el programa.</p>
+
+        <!-- P18 — Escala 1-5 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">22</span> ¿Cómo valoras el acompañamiento de los docentes universitarios? <span class="requerido">*</span>
+          </label>
+          <div class="escala-wrap">
+            <div class="escala-opciones" id="p18_valoracion_docentes">
+              <label class="escala-opcion"><input type="radio" name="p18_valoracion_docentes" value="1"><div class="escala-btn">1</div></label>
+              <label class="escala-opcion"><input type="radio" name="p18_valoracion_docentes" value="2"><div class="escala-btn">2</div></label>
+              <label class="escala-opcion"><input type="radio" name="p18_valoracion_docentes" value="3"><div class="escala-btn">3</div></label>
+              <label class="escala-opcion"><input type="radio" name="p18_valoracion_docentes" value="4"><div class="escala-btn">4</div></label>
+              <label class="escala-opcion"><input type="radio" name="p18_valoracion_docentes" value="5"><div class="escala-btn">5</div></label>
+            </div>
+            <div class="escala-labels"><span>Muy bajo</span><span>Excelente</span></div>
+          </div>
+          <div class="msg-error" id="err-p18_valoracion_docentes">Selecciona una valoración.</div>
+        </div>
+
+        <!-- P19 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">23</span> ¿Consideras que las estrategias del modelo Escuela Nueva favorecen tu aprendizaje? <span class="requerido">*</span>
+          </label>
+          <div class="opciones" id="p19_escuela_nueva">
+            <label class="opcion"><input type="radio" name="p19_escuela_nueva" value="Sí"><span class="opcion-circulo"></span><span class="opcion-texto">Sí</span></label>
+            <label class="opcion"><input type="radio" name="p19_escuela_nueva" value="No"><span class="opcion-circulo"></span><span class="opcion-texto">No</span></label>
+            <label class="opcion"><input type="radio" name="p19_escuela_nueva" value="Parcialmente"><span class="opcion-circulo"></span><span class="opcion-texto">Parcialmente</span></label>
+          </div>
+          <div class="msg-error" id="err-p19_escuela_nueva">Selecciona una opción.</div>
+        </div>
+
+        <!-- P20 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">24</span> ¿Cómo evalúas los módulos de currículo base entregados? <span class="requerido">*</span>
+          </label>
+          <div class="opciones" id="p20_modulos">
+            <label class="opcion"><input type="radio" name="p20_modulos" value="Muy útiles"><span class="opcion-circulo"></span><span class="opcion-texto">Muy útiles</span></label>
+            <label class="opcion"><input type="radio" name="p20_modulos" value="Útiles"><span class="opcion-circulo"></span><span class="opcion-texto">Útiles</span></label>
+            <label class="opcion"><input type="radio" name="p20_modulos" value="Poco útiles"><span class="opcion-circulo"></span><span class="opcion-texto">Poco útiles</span></label>
+          </div>
+          <div class="msg-error" id="err-p20_modulos">Selecciona una opción.</div>
+        </div>
+
+        <!-- P21 -->
+        <div class="pregunta">
+          <label class="pregunta-label">
+            <span class="num">25</span> ¿Consideras que los módulos se relacionan con tus proyectos para la vida? <span class="requerido">*</span>
+          </label>
+          <div class="opciones" id="p21_proyectos_vida">
+            <label class="opcion"><input type="radio" name="p21_proyectos_vida" value="Sí"><span class="opcion-circulo"></span><span class="opcion-texto">Sí</span></label>
+            <label class="opcion"><input type="radio" name="p21_proyectos_vida" value="No"><span class="opcion-circulo"></span><span class="opcion-texto">No</span></label>
+            <label class="opcion"><input type="radio" name="p21_proyectos_vida" value="Parcialmente"><span class="opcion-circulo"></span><span class="opcion-texto">Parcialmente</span></label>
+          </div>
+          <div class="msg-error" id="err-p21_proyectos_vida">Selecciona una opción.</div>
+        </div>
+
+        <!-- P22 -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="p22_aspectos_positivos">
+            <span class="num">26</span> ¿Qué aspectos positivos destacas del proceso formativo?
+          </label>
+          <textarea id="p22_aspectos_positivos" name="p22_aspectos_positivos" placeholder="Escribe aquí tu respuesta…"></textarea>
+        </div>
+
+        <!-- P23 -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="p23_mejoras">
+            <span class="num">27</span> ¿Qué aspectos deberían fortalecerse o mejorarse?
+          </label>
+          <textarea id="p23_mejoras" name="p23_mejoras" placeholder="Escribe aquí tu respuesta…"></textarea>
+        </div>
+
+        <div class="nav-botones">
+          <button type="button" class="btn btn-secundario" onclick="anterior()">← Anterior</button>
+          <button type="button" class="btn btn-primario" onclick="siguiente()">Siguiente →</button>
+        </div>
+      </section>
+
+      <!-- ==============================
+           SECCIÓN 6 — CIERRE
+           ============================== -->
+      <section class="seccion" id="sec6" data-titulo="Cierre" data-num="6">
+        <h2 class="seccion-titulo">Cierre</h2>
+        <p class="seccion-desc">¡Ya casi terminas! Un último espacio para lo que quieras compartir.</p>
+
+        <!-- P24 -->
+        <div class="pregunta">
+          <label class="pregunta-label" for="p24_comentarios">
+            <span class="num">28</span> ¿Deseas agregar algún comentario o recomendación?
+          </label>
+          <textarea id="p24_comentarios" name="p24_comentarios" placeholder="Escribe aquí tu respuesta…" style="min-height:120px"></textarea>
+        </div>
+
+        <div class="nav-botones">
+          <button type="button" class="btn btn-secundario" onclick="anterior()">← Anterior</button>
+          <button type="button" class="btn btn-primario" id="btnEnviar" onclick="enviarFormulario()">Enviar formulario ✓</button>
+        </div>
+      </section>
+
+      <!-- Estado de envío -->
+      <div class="enviando" id="enviando">
+        <div class="spinner"></div>
+        <p style="color:#666; font-size:0.92rem">Enviando tus respuestas…</p>
+      </div>
+
+      <!-- Pantalla de éxito -->
+      <div class="exito" id="exito">
+        <div class="exito-icono">🌱</div>
+        <h2 class="exito-titulo">¡Gracias por tu participación!</h2>
+        <p class="exito-texto">Tu respuesta fue enviada correctamente. Tu voz es importante para fortalecer La Universidad en el Campo.</p>
+        <button class="btn btn-primario" style="max-width:280px; margin:0 auto; display:block" onclick="reiniciarFormulario()">Registrar otra respuesta</button>
+      </div>
+
+    </div>
+  </form>
+
+  <script src="js/config.js"></script>
+  <script src="js/form.js"></script>
+</body>
+</html>
