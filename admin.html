@@ -290,6 +290,30 @@
       box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
     }
 
+    .filter-select {
+      padding: 8px 30px 8px 12px;
+      border: 1.5px solid var(--borde);
+      border-radius: 99px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      color: var(--texto);
+      background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 11px center;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      transition: all var(--t);
+      max-width: 160px;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--verde);
+      background-color: var(--verde-suave);
+      box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+    }
+
+    .filter-select:disabled { opacity: 0.45; cursor: not-allowed; }
+
     .btn-export {
       padding: 8px 16px;
       background: linear-gradient(135deg, var(--verde-dark), var(--verde-grad));
@@ -525,6 +549,12 @@
         <div class="tabla-header">
           <div class="tabla-titulo">Respuestas individuales</div>
           <div class="tabla-acciones">
+            <select id="filtroMunicipio" class="filter-select" onchange="filtrarTabla()" disabled>
+              <option value="">Todos los municipios</option>
+            </select>
+            <select id="filtroInstitucion" class="filter-select" onchange="filtrarTabla()" disabled>
+              <option value="">Todas las instituciones</option>
+            </select>
             <input
               type="search"
               id="searchInput"

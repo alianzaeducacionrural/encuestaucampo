@@ -55,6 +55,7 @@ async function cargarDatos() {
 
     renderStats();
     renderGraficos();
+    poblarFiltros();
     renderTabla();
 
   } catch (err) {
@@ -67,6 +68,38 @@ async function cargarDatos() {
     document.getElementById('tablaBody').innerHTML =
       '<tr><td colspan="10" class="tabla-vacia">Sin datos disponibles.</td></tr>';
   }
+}
+
+// ================================================
+// FILTROS DESPLEGABLES
+// ================================================
+function poblarFiltros() {
+  const munis  = [...new Set(respuestas.map(r => r.municipio).filter(Boolean))].sort();
+  const insts  = [...new Set(respuestas.map(r => r.institucion).filter(Boolean))].sort();
+
+  const selMun  = document.getElementById('filtroMunicipio');
+  const selInst = document.getElementById('filtroInstitucion');
+
+  // Limpiar y repoblar municipios
+  selMun.innerHTML = '<option value="">Todos los municipios</option>';
+  munis.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m;
+    opt.textContent = m;
+    selMun.appendChild(opt);
+  });
+
+  // Limpiar y repoblar instituciones
+  selInst.innerHTML = '<option value="">Todas las instituciones</option>';
+  insts.forEach(i => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = i;
+    selInst.appendChild(opt);
+  });
+
+  selMun.disabled  = munis.length === 0;
+  selInst.disabled = insts.length === 0;
 }
 
 // ================================================
@@ -322,15 +355,17 @@ function renderTabla() {
 }
 
 function filtrarTabla() {
-  const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-  if (!q) {
-    filtradas = [...respuestas];
-  } else {
-    filtradas = respuestas.filter(r =>
-      Object.values(r).some(v => String(v).toLowerCase().includes(q))
-    );
-  }
-  // Reaplicar orden actual
+  const q    = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  const mun  = document.getElementById('filtroMunicipio').value;
+  const inst = document.getElementById('filtroInstitucion').value;
+
+  filtradas = respuestas.filter(r => {
+    if (mun  && r.municipio  !== mun)  return false;
+    if (inst && r.institucion !== inst) return false;
+    if (q && !Object.values(r).some(v => String(v).toLowerCase().includes(q))) return false;
+    return true;
+  });
+
   aplicarOrden();
   renderTabla();
 }
