@@ -154,6 +154,26 @@
       max-width: 240px;
     }
 
+    .btn-limpiar {
+      padding: 7px 14px;
+      background: var(--surface);
+      color: var(--muted);
+      border: 1.5px solid var(--borde);
+      border-radius: 99px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--t);
+      white-space: nowrap;
+    }
+
+    .btn-limpiar:hover {
+      border-color: var(--error);
+      color: var(--error);
+      background: #fef2f2;
+    }
+
     /* ── Cards de estadísticas ── */
     .stats-grid {
       display: grid;
@@ -610,6 +630,7 @@
         <select id="globalUniversidad" class="filter-select" onchange="onGlobalFilterChange()">
           <option value="">Todas las universidades</option>
         </select>
+        <button class="btn-limpiar" onclick="limpiarFiltros()">✕ Limpiar</button>
       </div>
 
       <!-- Estadísticas -->

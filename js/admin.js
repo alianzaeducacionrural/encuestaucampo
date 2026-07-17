@@ -86,19 +86,21 @@ function poblarFiltrosGlobales() {
   const selUni  = document.getElementById('globalUniversidad');
 
   if (catalogos) {
-    // Poblar municipios desde catálogos
+    // Solo municipios con respuestas
+    const munisConDatos = new Set(respuestas.map(r => r.municipio).filter(Boolean));
     selMun.innerHTML = '<option value="">Todos los municipios</option>';
-    Object.keys(catalogos.geo).sort().forEach(m => selMun.add(new Option(m, m)));
-    selMun.disabled = false;
+    Object.keys(catalogos.geo).sort().filter(m => munisConDatos.has(m)).forEach(m => selMun.add(new Option(m, m)));
+    selMun.disabled = selMun.options.length <= 1;
 
     // Institución empieza vacía (se llena al elegir municipio)
     selInst.innerHTML = '<option value="">Todas las instituciones</option>';
     selInst.disabled = true;
 
-    // Poblar universidades desde catálogos
+    // Solo universidades con respuestas
+    const unisConDatos = new Set(respuestas.map(r => r.universidad).filter(Boolean));
     selUni.innerHTML = '<option value="">Todas las universidades</option>';
-    Object.keys(catalogos.programas).sort().forEach(u => selUni.add(new Option(u, u)));
-    selUni.disabled = false;
+    Object.keys(catalogos.programas).sort().filter(u => unisConDatos.has(u)).forEach(u => selUni.add(new Option(u, u)));
+    selUni.disabled = selUni.options.length <= 1;
 
     bar.style.display = 'flex';
   } else {
@@ -131,20 +133,29 @@ function onGlobalMunicipioChange() {
   selInst.disabled = true;
 
   if (mun) {
+    const instsConDatos = new Set(respuestas.filter(r => r.municipio === mun).map(r => r.institucion).filter(Boolean));
     let insts = [];
     if (catalogos && catalogos.geo[mun]) {
-      insts = Object.keys(catalogos.geo[mun]).sort();
+      insts = Object.keys(catalogos.geo[mun]).sort().filter(i => instsConDatos.has(i));
     } else {
-      insts = [...new Set(respuestas.filter(r => r.municipio === mun).map(r => r.institucion).filter(Boolean))].sort();
+      insts = [...instsConDatos].sort();
     }
     insts.forEach(i => selInst.add(new Option(i, i)));
-    selInst.disabled = false;
+    selInst.disabled = insts.length === 0;
   }
 
   aplicarFiltrosGlobales();
 }
 
 function onGlobalFilterChange() {
+  aplicarFiltrosGlobales();
+}
+
+function limpiarFiltros() {
+  document.getElementById('globalMunicipio').value = '';
+  document.getElementById('globalInstitucion').innerHTML = '<option value="">Todas las instituciones</option>';
+  document.getElementById('globalInstitucion').disabled = true;
+  document.getElementById('globalUniversidad').value = '';
   aplicarFiltrosGlobales();
 }
 
