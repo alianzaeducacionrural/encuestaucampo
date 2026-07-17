@@ -125,6 +125,35 @@
     .notif.error   { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
     .notif.cargando{ background: var(--surface); color: var(--muted); border: 1px solid var(--borde); }
 
+    /* ── Filtros globales ── */
+    .filtros-globales-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding: 14px 18px;
+      background: var(--card);
+      border: 1.5px solid var(--borde);
+      border-radius: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
+    }
+
+    .filtros-globales-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--texto);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .filtros-globales-bar .filter-select {
+      flex: 1 1 180px;
+      min-width: 120px;
+      max-width: 240px;
+    }
+
     /* ── Cards de estadísticas ── */
     .stats-grid {
       display: grid;
@@ -402,6 +431,128 @@
       border-top: 1px solid var(--borde);
     }
 
+    /* ── Modal de respuesta completa ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.55);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.visible { display: flex; }
+
+    .modal-card {
+      background: var(--card);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 640px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--borde);
+      flex-shrink: 0;
+    }
+
+    .modal-titulo {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--texto);
+    }
+
+    .modal-cerrar {
+      width: 32px; height: 32px;
+      border: none;
+      background: var(--surface);
+      border-radius: 99px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: all var(--t);
+    }
+
+    .modal-cerrar:hover {
+      background: #fee2e2;
+      color: var(--error);
+    }
+
+    .modal-body {
+      padding: 22px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-seccion { margin-bottom: 22px; }
+
+    .modal-seccion:last-child { margin-bottom: 0; }
+
+    .modal-seccion h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--verde-dark);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid var(--verde-medio);
+    }
+
+    .modal-seccion dl {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4px 12px;
+      font-size: 0.85rem;
+    }
+
+    .modal-seccion dt {
+      color: var(--muted);
+      font-weight: 500;
+      padding: 4px 0;
+    }
+
+    .modal-seccion dd {
+      color: var(--texto);
+      font-weight: 400;
+      padding: 4px 0;
+      word-break: break-word;
+    }
+
+    .btn-ver {
+      padding: 4px 10px;
+      border: 1.5px solid var(--borde);
+      background: var(--surface);
+      border-radius: 99px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--t);
+      white-space: nowrap;
+      color: var(--muted);
+    }
+
+    .btn-ver:hover {
+      border-color: var(--verde-medio);
+      background: var(--verde-suave);
+      color: var(--verde-dark);
+    }
+
     /* ── Responsive ── */
     @media (max-width: 640px) {
       .main { padding: 20px 12px 60px; }
@@ -445,6 +596,20 @@
       <div class="notif cargando visible" id="notif">
         <span id="notifIcono">⏳</span>
         <span id="notifTexto">Cargando respuestas…</span>
+      </div>
+
+      <!-- Filtros globales -->
+      <div class="filtros-globales-bar" id="filtrosGlobales" style="display:none">
+        <span class="filtros-globales-label">🌎 Filtrar por</span>
+        <select id="globalMunicipio" class="filter-select" onchange="onGlobalMunicipioChange()">
+          <option value="">Todos los municipios</option>
+        </select>
+        <select id="globalInstitucion" class="filter-select" onchange="onGlobalFilterChange()" disabled>
+          <option value="">Todas las instituciones</option>
+        </select>
+        <select id="globalUniversidad" class="filter-select" onchange="onGlobalFilterChange()">
+          <option value="">Todas las universidades</option>
+        </select>
       </div>
 
       <!-- Estadísticas -->
@@ -549,12 +714,6 @@
         <div class="tabla-header">
           <div class="tabla-titulo">Respuestas individuales</div>
           <div class="tabla-acciones">
-            <select id="filtroMunicipio" class="filter-select" onchange="filtrarTabla()" disabled>
-              <option value="">Todos los municipios</option>
-            </select>
-            <select id="filtroInstitucion" class="filter-select" onchange="filtrarTabla()" disabled>
-              <option value="">Todas las instituciones</option>
-            </select>
             <input
               type="search"
               id="searchInput"
@@ -579,10 +738,11 @@
                 <th onclick="ordenarPor('p7_continuar')">Continúa ↕</th>
                 <th onclick="ordenarPor('p11_desempeno')">Desempeño ↕</th>
                 <th onclick="ordenarPor('p18_valoracion_docentes')">Val. docente ↕</th>
+                <th>Acción</th>
               </tr>
             </thead>
             <tbody id="tablaBody">
-              <tr><td colspan="10" class="tabla-vacia">Cargando datos…</td></tr>
+              <tr><td colspan="11" class="tabla-vacia">Cargando datos…</td></tr>
             </tbody>
           </table>
         </div>
@@ -590,6 +750,19 @@
       </div>
 
     </main>
+  </div>
+
+  <!-- ══════════════════════════
+       MODAL DE RESPUESTA COMPLETA
+       ══════════════════════════ -->
+  <div class="modal-overlay" id="modalRespuesta" onclick="if(event.target===this)cerrarModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-titulo">📋 Respuesta completa</span>
+        <button class="modal-cerrar" onclick="cerrarModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
   </div>
 
   <script src="js/config.js"></script>
