@@ -6,27 +6,30 @@
 //   → { ok: true, data: [ { ...campos del formulario, timestamp: "..." } ] }
 // ================================================
 
-// Paleta de colores coherente con el formulario
+// Paleta de colores — finca cafetera, coherente con el CSS de admin.html
 const PALETA = {
-  verde:   '#059669',
-  verdeD:  '#047857',
-  verdeC:  '#34d399',
-  verde2:  '#a7f3d0',
-  naranja: '#f97316',
-  azul:    '#3b82f6',
-  morado:  '#8b5cf6',
-  rojo:    '#ef4444',
-  gris:    '#94a3b8',
+  verde:   '#2f6b3a',  // cafetal
+  verdeD:  '#1f4d28',  // cafetal oscuro
+  verdeC:  '#6fa860',  // cafetal claro
+  verde2:  '#e3edde',  // cafetal suave
+  naranja: '#b5651d',  // tierra
+  azul:    '#3f6672',  // cielo
+  morado:  '#b9812f',  // grano dorado
+  rojo:    '#9c2b2b',  // cereza
+  gris:    '#b7ab99',  // tinta fantasma
 };
 
 const PIE_COLORS = [PALETA.verde, PALETA.verdeC, PALETA.naranja, PALETA.azul, PALETA.morado, PALETA.rojo, PALETA.gris];
+
+// Municipio fijado por la URL (?municipio=Manizales) — enlace de solo lectura para un municipio
+const MUNICIPIO_BLOQUEADO = new URLSearchParams(location.search).get('municipio') || null;
 
 // Estado global
 let respuestas     = [];    // datos crudos del GAS
 let datosFiltrados = [];    // después de filtros globales
 let filtradas      = [];    // después de filtros globales + búsqueda + orden
-let ordenCol       = 'fecha_diligenciamiento';
-let ordenAsc       = false;
+let ordenCol       = 'nombre';
+let ordenAsc       = true;
 let instGraficos   = {};   // instancias Chart.js
 let catalogos      = null; // catálogos del GAS para filtros en cascada
 
@@ -62,6 +65,7 @@ async function cargarDatos() {
     }
 
     poblarFiltrosGlobales();
+    aplicarBloqueoMunicipio();
     aplicarFiltrosGlobales();
 
   } catch (err) {
@@ -72,7 +76,7 @@ async function cargarDatos() {
       'Detalle: ' + err.message
     );
     document.getElementById('tablaBody').innerHTML =
-      '<tr><td colspan="11" class="tabla-vacia">Sin datos disponibles.</td></tr>';
+      '<tr><td colspan="9" class="tabla-vacia">Sin datos disponibles.</td></tr>';
   }
 }
 
@@ -123,27 +127,35 @@ function poblarFiltrosGlobales() {
 
     bar.style.display = munis.length || insts.length || unis.length ? 'flex' : 'none';
   }
+
+  // El enlace bloqueado a un municipio siempre debe mostrar la barra de filtros,
+  // aunque ese municipio todavía no tenga respuestas.
+  if (MUNICIPIO_BLOQUEADO) bar.style.display = 'flex';
 }
 
-function onGlobalMunicipioChange() {
+// Repuebla el select de instituciones para un municipio dado (usado tanto por el
+// cambio manual de municipio como por el bloqueo por URL).
+function poblarInstitucionesPara(mun) {
   const selInst = document.getElementById('globalInstitucion');
-  const mun     = document.getElementById('globalMunicipio').value;
 
   selInst.innerHTML = '<option value="">Todas las instituciones</option>';
   selInst.disabled = true;
 
-  if (mun) {
-    const instsConDatos = new Set(respuestas.filter(r => r.municipio === mun).map(r => r.institucion).filter(Boolean));
-    let insts = [];
-    if (catalogos && catalogos.geo[mun]) {
-      insts = Object.keys(catalogos.geo[mun]).sort().filter(i => instsConDatos.has(i));
-    } else {
-      insts = [...instsConDatos].sort();
-    }
-    insts.forEach(i => selInst.add(new Option(i, i)));
-    selInst.disabled = insts.length === 0;
-  }
+  if (!mun) return;
 
+  const instsConDatos = new Set(respuestas.filter(r => r.municipio === mun).map(r => r.institucion).filter(Boolean));
+  let insts = [];
+  if (catalogos && catalogos.geo[mun]) {
+    insts = Object.keys(catalogos.geo[mun]).sort().filter(i => instsConDatos.has(i));
+  } else {
+    insts = [...instsConDatos].sort();
+  }
+  insts.forEach(i => selInst.add(new Option(i, i)));
+  selInst.disabled = insts.length === 0;
+}
+
+function onGlobalMunicipioChange() {
+  poblarInstitucionesPara(document.getElementById('globalMunicipio').value);
   aplicarFiltrosGlobales();
 }
 
@@ -152,11 +164,42 @@ function onGlobalFilterChange() {
 }
 
 function limpiarFiltros() {
-  document.getElementById('globalMunicipio').value = '';
+  if (!MUNICIPIO_BLOQUEADO) {
+    document.getElementById('globalMunicipio').value = '';
+  }
   document.getElementById('globalInstitucion').innerHTML = '<option value="">Todas las instituciones</option>';
   document.getElementById('globalInstitucion').disabled = true;
   document.getElementById('globalUniversidad').value = '';
   aplicarFiltrosGlobales();
+}
+
+// Fija el filtro de municipio cuando el dashboard se abre como admin.html?municipio=Manizales:
+// oculta el selector, muestra una insignia fija y deja institución/universidad libres para
+// seguir acotando dentro de ese municipio.
+function aplicarBloqueoMunicipio() {
+  if (!MUNICIPIO_BLOQUEADO) return;
+
+  const selMun = document.getElementById('globalMunicipio');
+  if (![...selMun.options].some(o => o.value === MUNICIPIO_BLOQUEADO)) {
+    selMun.add(new Option(MUNICIPIO_BLOQUEADO, MUNICIPIO_BLOQUEADO));
+  }
+  selMun.value = MUNICIPIO_BLOQUEADO;
+  selMun.classList.add('hidden');
+  poblarInstitucionesPara(MUNICIPIO_BLOQUEADO);
+
+  const chip = document.getElementById('chipMunicipioBloqueado');
+  if (chip) { chip.textContent = `📍 ${MUNICIPIO_BLOQUEADO}`; chip.classList.remove('hidden'); }
+
+  const heroChip = document.getElementById('heroMunicipioChip');
+  if (heroChip) { heroChip.textContent = ` — ${MUNICIPIO_BLOQUEADO}`; heroChip.classList.remove('hidden'); }
+
+  const navSub = document.getElementById('navbarSub');
+  if (navSub) navSub.textContent = MUNICIPIO_BLOQUEADO;
+
+  const btnQuitar = document.getElementById('btnQuitarBloqueo');
+  if (btnQuitar) btnQuitar.classList.remove('hidden');
+
+  document.title = `Panel Admin — ${MUNICIPIO_BLOQUEADO}`;
 }
 
 function aplicarFiltrosGlobales() {
@@ -181,21 +224,10 @@ function aplicarFiltrosGlobales() {
 // ESTADÍSTICAS
 // ================================================
 function renderStats() {
-  const hoy   = new Date().toISOString().split('T')[0];
   const datos = datosFiltrados;
 
   // Total
   set('statTotal', datos.length);
-
-  // Hoy
-  const hoyCount = datos.filter(r => (r.timestamp || r.fecha_diligenciamiento || '').startsWith(hoy)).length;
-  set('statHoy', hoyCount);
-
-  // Universidad más frecuente
-  const uniMap = contarCampo(datos, 'universidad');
-  const topUni = topKey(uniMap);
-  set('statUni', topUni ? uniMap[topUni] : 0);
-  set('statUniNombre', topUni || '—');
 
   // Valoración promedio docentes
   const vals = datos.map(r => Number(r.p18_valoracion_docentes)).filter(n => n > 0);
@@ -206,14 +238,15 @@ function renderStats() {
   const motivados = datos.filter(r =>
     r.p6_motivacion === 'Muy motivado' || r.p6_motivacion === 'Motivado'
   ).length;
-  const pctMot = datos.length
-    ? Math.round((motivados / datos.length) * 100) + '%'
-    : '—';
-  set('statMotivados', pctMot);
+  set('statMotivados', datos.length ? Math.round((motivados / datos.length) * 100) + '%' : '—');
 
-  // Municipios únicos
-  const munis = new Set(datos.map(r => r.municipio).filter(Boolean));
-  set('statMun', munis.size);
+  // Necesitan acompañamiento
+  const acompana = datos.filter(r => r.p15_acompanamiento === 'Sí').length;
+  set('statAcompanamiento', datos.length ? Math.round((acompana / datos.length) * 100) + '%' : '—');
+
+  // Instituciones educativas participantes
+  const instituciones = new Set(datos.map(r => r.institucion).filter(Boolean));
+  set('statInstituciones', instituciones.size);
 }
 
 // ================================================
@@ -302,7 +335,7 @@ function crearHistogramaDocentes(id, datos) {
     if (conteo[v] !== undefined) conteo[v]++;
   });
 
-  const gradColors = ['#ef4444','#f97316','#eab308','#34d399','#059669'];
+  const gradColors = [PALETA.rojo, PALETA.naranja, PALETA.morado, PALETA.verdeC, PALETA.verde];
 
   if (instGraficos[id]) instGraficos[id].destroy();
 
@@ -396,7 +429,7 @@ function renderTabla() {
   const countEl = document.getElementById('tablaCount');
 
   if (filtradas.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="11" class="tabla-vacia">Sin resultados para la búsqueda.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" class="tabla-vacia">Sin resultados para la búsqueda.</td></tr>`;
     countEl.textContent = '';
     return;
   }
@@ -416,12 +449,10 @@ function renderTabla() {
     const idx = datosFiltrados.indexOf(r);
 
     return `<tr>
-      <td>${(r.fecha_diligenciamiento || r.timestamp || '').substring(0, 10)}</td>
-      <td><strong>${esc(r.nombre)}</strong></td>
+      <td title="${esc(r.nombre)}"><strong>${truncar(r.nombre, 22)}</strong></td>
       <td>${esc(r.municipio)}</td>
-      <td>${esc(r.universidad)}</td>
-      <td title="${esc(r.programa)}">${truncar(r.programa, 28)}</td>
-      <td>${esc(r.semestre)}</td>
+      <td title="${esc(r.universidad)}">${truncar(r.universidad, 22)}</td>
+      <td title="${esc(r.programa)}">${truncar(r.programa, 22)}</td>
       <td>${motBadge}</td>
       <td>${contBadge}</td>
       <td>${despBadge}</td>
@@ -582,10 +613,6 @@ function contarCampo(datos, campo) {
     mapa[v] = (mapa[v] || 0) + 1;
   });
   return mapa;
-}
-
-function topKey(mapa) {
-  return Object.keys(mapa).sort((a, b) => mapa[b] - mapa[a])[0] || null;
 }
 
 function set(id, val) {
