@@ -278,7 +278,22 @@ function renderGraficos() {
   ]);
 
   crearBarHorizontal('chartUniversidad', datos, 'universidad');
-  crearBarHorizontal('chartMunicipio', datos, 'municipio');
+
+  // El gráfico "por municipio" no aporta nada cuando el dashboard está
+  // bloqueado a un solo municipio (siempre sería una sola barra) — en ese
+  // caso se reemplaza por el detalle por institución educativa.
+  const cardMunicipio    = document.getElementById('cardMunicipio');
+  const cardInstitucion  = document.getElementById('cardInstitucion');
+
+  if (MUNICIPIO_BLOQUEADO) {
+    cardMunicipio.classList.add('hidden');
+    cardInstitucion.classList.remove('hidden');
+    crearBarHorizontal('chartInstitucion', datos, 'institucion');
+  } else {
+    cardMunicipio.classList.remove('hidden');
+    cardInstitucion.classList.add('hidden');
+    crearBarHorizontal('chartMunicipio', datos, 'municipio');
+  }
 }
 
 function crearPie(id, datos, campo, colores) {
