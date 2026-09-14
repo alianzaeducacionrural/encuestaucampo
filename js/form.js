@@ -50,9 +50,40 @@ document.addEventListener('DOMContentLoaded', () => {
 // ================================================
 // CATÁLOGOS DEPENDIENTES
 // ================================================
+const MENSAJES_CARGA = [
+  'Cargando tu formulario…',
+  'Preparando municipios, instituciones y sedes…',
+  'Conectando con el servidor…',
+  '¡Ya casi puedes empezar!',
+];
+let mensajeCargaTimer = null;
+
+function iniciarMensajesCarga() {
+  const el = document.getElementById('cargandoTexto');
+  if (!el) return;
+  let i = 0;
+  mensajeCargaTimer = setInterval(() => {
+    i = (i + 1) % MENSAJES_CARGA.length;
+    el.classList.add('fade');
+    setTimeout(() => {
+      el.textContent = MENSAJES_CARGA[i];
+      el.classList.remove('fade');
+    }, 250);
+  }, 1900);
+}
+
+function detenerMensajesCarga() {
+  if (mensajeCargaTimer) {
+    clearInterval(mensajeCargaTimer);
+    mensajeCargaTimer = null;
+  }
+}
+
 async function cargarCatalogos() {
   const cargando = document.getElementById('cargandoCatalogos');
   const form     = document.getElementById('formulario');
+
+  iniciarMensajesCarga();
 
   try {
     const res  = await fetch(`${CONFIG.GAS_URL}?accion=catalogos`);
@@ -76,10 +107,12 @@ async function cargarCatalogos() {
     // Restaurar borrador si existe
     restaurarBorrador();
 
+    detenerMensajesCarga();
     cargando.classList.remove('visible');
     form.style.display = 'block';
 
   } catch (err) {
+    detenerMensajesCarga();
     cargando.innerHTML = `
       <p style="color:#c1121f; font-size:0.9rem">
         No se pudo cargar el formulario.<br>

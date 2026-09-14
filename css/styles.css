@@ -757,7 +757,10 @@ textarea {
   color: var(--texto-muted);
   margin-top: 16px;
   font-weight: 500;
+  transition: opacity 0.25s ease;
 }
+
+.cargando-texto.fade { opacity: 0; }
 
 /* ─── Responsive ─────────────────────────────── */
 @media (max-width: 600px) {
