@@ -89,6 +89,12 @@ function poblarFiltrosGlobales() {
   const selInst = document.getElementById('globalInstitucion');
   const selUni  = document.getElementById('globalUniversidad');
 
+  // Con el dashboard bloqueado a un municipio, institución/universidad solo
+  // deben ofrecer valores que existan dentro de ese municipio.
+  const base = MUNICIPIO_BLOQUEADO
+    ? respuestas.filter(r => r.municipio === MUNICIPIO_BLOQUEADO)
+    : respuestas;
+
   if (catalogos) {
     // Solo municipios con respuestas
     const munisConDatos = new Set(respuestas.map(r => r.municipio).filter(Boolean));
@@ -100,8 +106,8 @@ function poblarFiltrosGlobales() {
     selInst.innerHTML = '<option value="">Todas las instituciones</option>';
     selInst.disabled = true;
 
-    // Solo universidades con respuestas
-    const unisConDatos = new Set(respuestas.map(r => r.universidad).filter(Boolean));
+    // Solo universidades con respuestas (dentro del municipio bloqueado, si aplica)
+    const unisConDatos = new Set(base.map(r => r.universidad).filter(Boolean));
     selUni.innerHTML = '<option value="">Todas las universidades</option>';
     Object.keys(catalogos.programas).sort().filter(u => unisConDatos.has(u)).forEach(u => selUni.add(new Option(u, u)));
     selUni.disabled = selUni.options.length <= 1;
@@ -110,8 +116,8 @@ function poblarFiltrosGlobales() {
   } else {
     // Fallback: poblar desde respuestas
     const munis = [...new Set(respuestas.map(r => r.municipio).filter(Boolean))].sort();
-    const insts = [...new Set(respuestas.map(r => r.institucion).filter(Boolean))].sort();
-    const unis  = [...new Set(respuestas.map(r => r.universidad).filter(Boolean))].sort();
+    const insts = [...new Set(base.map(r => r.institucion).filter(Boolean))].sort();
+    const unis  = [...new Set(base.map(r => r.universidad).filter(Boolean))].sort();
 
     selMun.innerHTML = '<option value="">Todos los municipios</option>';
     munis.forEach(m => selMun.add(new Option(m, m)));
@@ -179,10 +185,11 @@ function limpiarFiltros() {
 function aplicarBloqueoMunicipio() {
   if (!MUNICIPIO_BLOQUEADO) return;
 
+  // Deja únicamente la opción del municipio bloqueado en el select — así ni
+  // siquiera queda en el HTML el nombre de los demás municipios con datos.
   const selMun = document.getElementById('globalMunicipio');
-  if (![...selMun.options].some(o => o.value === MUNICIPIO_BLOQUEADO)) {
-    selMun.add(new Option(MUNICIPIO_BLOQUEADO, MUNICIPIO_BLOQUEADO));
-  }
+  selMun.innerHTML = '';
+  selMun.add(new Option(MUNICIPIO_BLOQUEADO, MUNICIPIO_BLOQUEADO));
   selMun.value = MUNICIPIO_BLOQUEADO;
   selMun.classList.add('hidden');
   poblarInstitucionesPara(MUNICIPIO_BLOQUEADO);
@@ -195,9 +202,6 @@ function aplicarBloqueoMunicipio() {
 
   const navSub = document.getElementById('navbarSub');
   if (navSub) navSub.textContent = MUNICIPIO_BLOQUEADO;
-
-  const btnQuitar = document.getElementById('btnQuitarBloqueo');
-  if (btnQuitar) btnQuitar.classList.remove('hidden');
 
   document.title = `Panel Admin — ${MUNICIPIO_BLOQUEADO}`;
 }
